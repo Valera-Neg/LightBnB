@@ -113,8 +113,7 @@ exports.addUser = addUser;
   GROUP BY properties.id, reservations.id
   LIMIT $2
   `;
-
-  return pool
+    return pool
     .query(allUserReservation, [guest_id, limit])
     .then(result => {
       console.log('reservation', result.rows)
@@ -148,6 +147,26 @@ const getAllProperties = (options, limit = 10) => {
   if (options.city) {
     queryParams.push(`%${options.city}%`);
     queryString +=`WHERE city LIKE $${queryParams.length}`
+  }
+
+  if (options.ovner_id) {
+    queryParams.push(`${options.owner_id}`)
+    queryString += ` AND owner_id = $${queryParams.length}`
+  }
+
+  if (options.minimum_price_per_night) {
+    queryParams.push(`${options.minimum_price_per_night}`)
+    queryString += ` AND  cost_per_night >= $${queryParams.length}`
+  }
+  
+  if (options.maximum_price_per_night) {
+      queryParams.push(`${options.maximum_price_per_night}`)
+      queryString += ` AND  cost_per_night <= $${queryParams.length}`
+  } 
+  
+  if (options. minimum_rating) {
+    queryParams.push(`${options. minimum_rating}`)
+    queryString += ` AND property_reviews.rating >= $${queryParams.length}`
   }
 
   queryParams.push(limit);
