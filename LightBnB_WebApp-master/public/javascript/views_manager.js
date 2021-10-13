@@ -4,14 +4,22 @@ $(() => {
 
   window.views_manager = {};
 
-  window.views_manager.show = function(item) {
+
+
+  window.views_manager.show = function(item, data='') {
     $newPropertyForm.detach();
     $propertyListings.detach();
     $searchPropertyForm.detach();
     $logInForm.detach();
     $signUpForm.detach();
+    $newReservationForm.detach();
 
     switch (item) {
+      case 'newReservation':
+        const dataTag = `<h4>${data}</h4>`;
+        $newReservationForm.appendTo($main);
+        $(dataTag).appendTo("#datatag");
+        break;
       case 'listings':
         $propertyListings.appendTo($main);
         break;
