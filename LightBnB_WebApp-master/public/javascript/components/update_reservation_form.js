@@ -214,7 +214,17 @@ $(() => {
       updateReservation(dataObj)
       .then(data => {
         console.log(`updated reservation: ${data}`);
-        views_manager.shows('listings')
+        views_manager.show('none');
+        propertyListings.clearListings();
+        getFulfilledReservations()
+        .then(function(json) {
+          propertyListings.addProperties(json.reservations, { upcoming: false });
+          getUpcomingReservations()
+          .then(json => {
+            propertyListings.addProperties(json.reservations, { upcoming: true })
+          })
+          views_manager.show('listings');
+        })
       })
       .catch(error => {
         console.error(error)

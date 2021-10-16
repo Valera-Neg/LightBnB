@@ -50,17 +50,17 @@ exports.getUserWithEmail = getUserWithEmail;
  */
 
  const getUserWithId = function (id) {
-  if(user.email !== user.id){
-    return null;
-  }
+    if(!id){
+      return null;
+    }
 const sql = 
  `SELECT * FROM users
-  WHERE email = $1`;
+  WHERE id = $1`;
 
   return pool
    .query(sql, [id])
    .then(result => {
-    return result.rows;
+    return result.rows[0];
    })
    .catch(err => console.error('input error', err.stack));
  };
@@ -139,7 +139,8 @@ exports.getFulfilledReservations = getFulfilledReservations;
 const getAllProperties = (options, limit = 10) => {
   const queryParams = [];
 
-  let queryString = `SELECT properties.*, avg(property_reviews.rating) as average_rating
+  let queryString = `SELECT properties.*, avg(property_reviews.rating) as average_rating,
+  count(property_reviews.rating) as reviews_count
   FROM properties
   JOIN property_reviews ON properties.id = property_id 
   `;
@@ -175,12 +176,9 @@ const getAllProperties = (options, limit = 10) => {
   LIMIT $${queryParams.length}
   `;
 
-  // console.log(queryString, queryParams);
-
   return pool.query(queryString, queryParams)
   .then((res) => res.rows).catch(err => console
   .error('input error', err.stack))
-  
   };
 
 exports.getAllProperties = getAllProperties;
@@ -289,15 +287,16 @@ const updateReservation = function(reservationData) {
     let params = [];
     if (reservationData.start_date){
       params.push(reservationData.start_date);
-      queryString += `start_date = $1`;
-    }
+      queryString += ` start_date = $1`
+    
     if (reservationData.end_date) {
       params.push(reservationData.end_date);
-      queryString += `start_date = $2`;
-    } else {
-      params.push(reservationData.end_date);
-      queryString += `start_date = $1`;
-    }
+      queryString += `, end_date = $2`;
+    } 
+  } else {
+    params.push(reservationData.end_date);
+    queryString += ` start_date = $1`;
+  }
     queryString += ` WHERE id = $${params.length + 1} RETURNING *;` 
     params.push(reservationData.reservation_id);
     console.log(queryString);
@@ -317,13 +316,76 @@ exports.updateReservation = updateReservation;
 //  Deletes an existing reservation
 //
 const deleteReservation = function(reservationId) {
-
+ queryString = `
+ DELETE FROM reservations
+ WHERE id = $1;
+ `;
+ params = [reservationId]
+ console.log("Successfully deleted!")
+  return pool
+    .query(queryString, params)
+    .then(() => console.log("Successfully deleted!"))
+    .catch(() => console.error(err));
+     
+    
 }
 
+exports.deleteReservation = deleteReservation;
+
+/*
+ *  get reviews by property
+ */
+// const getReviewsByProperty = function(propertyId) {
+//   const queryString = `
+//     SELECT property_reviews.id, property_reviews.rating AS review_rating, property_reviews.message AS review_text, 
+//     users.name, properties.title AS property_title, reservations.start_date, reservations.end_date
+//     FROM property_reviews
+//     JOIN reservations ON reservations.id = property_reviews.reservation_id  
+//     JOIN properties ON properties.id = property_reviews.property_id
+//     WHERE properties.id = $1
+//     ORDER BY reservations.start_date ASC;
+//   `
+//   const queryParams = [propertyId];
+//   return pool.query(queryString, queryParams).then(res => res.rows)
+// }
+
+// exports.getReviewsByProperty = getReviewsByProperty;
+
+const getReviewsByProperty = function(propertyId) {
+  const queryString = `
+  SELECT property_reviews.id, property_reviews.rating as review_rating, 
+  property_reviews.message as review_text, users.name, properties.title as property_title, 
+  reservations.start_date, reservations.end_date
+  FROM property_reviews
+  JOIN reservations ON reservations.id = property_reviews.reservation_id
+  JOIN properties ON properties.id = property_reviews.property_id
+  JOIN users ON users.id = property_reviews.guest_id
+  WHERE properties.id = $1
+  ORDER BY reservations.start_date ASC;
+  `
+  const params = [propertyId]
+  return pool
+  .query(queryString, params)
+  .then(res => res.rows)
+  .catch(() => console.error(err));
+}
+exports.getReviewsByProperty = getReviewsByProperty;
 
 
-// (`UPDATE reservations
-//     SET start_date = ${newReservationData.start_date}, 
-//         end date = ${newReservationData.end_data},
-//         property_id = ${newReservationData.property_id},
-//         guest_id = ${newReservationData.guest_id}`)
+const addReview =  function(review) {
+ const queryString = `
+ INSERT INTO property_revievs (guest_id, property_id, reservation_id, rating, message)
+ VALUES ($1, $2, $3, $4, $5)
+ RETURNING * `;
+const params = [review.guest_id, review.property_id, 
+  review.reservation_id, parseInt(review.rating), review.message]
+
+  return pool 
+    .query(queryString, params)
+    .then((result) => {
+      return result.rows;
+    })
+    .catch(() => console.error(err))
+}
+
+exports.addReview = addReview;

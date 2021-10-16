@@ -3,6 +3,9 @@ $(() => {
 
   const $pageHeader = $('#page-header');
   let currentUser = null;
+
+  
+
   function updateHeader(user) {
     currentUser = user;
     $pageHeader.find("#page-header__user-links").remove();
@@ -63,6 +66,7 @@ $(() => {
   
   $("header").on("click", '.my_listing_button', function() {
     propertyListings.clearListings();
+    
     getAllListings(`owner_id=${currentUser.id}`)
       .then(function(json) {
         propertyListings.addProperties(json.properties);

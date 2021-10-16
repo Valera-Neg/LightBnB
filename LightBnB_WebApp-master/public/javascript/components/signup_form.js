@@ -29,7 +29,7 @@ $(() => {
 
     const data = $(this).serialize();
     signUp(data)
-      .then(getMyDetails)
+      getMyDetails()
       .then((json) => {
         header.update(json.user);
         views_manager.show('listings');

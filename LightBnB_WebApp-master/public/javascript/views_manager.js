@@ -5,20 +5,30 @@ $(() => {
   window.views_manager = {};
 
 
-
-  window.views_manager.show = function(item, data='') {
+  window.views_manager.show = function (item, data = '') {
     $newPropertyForm.detach();
     $propertyListings.detach();
     $searchPropertyForm.detach();
     $logInForm.detach();
     $signUpForm.detach();
     $newReservationForm.detach();
-    $('reservation-details').detach();
-   
+    $updateReservationForm.detach();
+    $propertyReviews.detach();
+    $newReviewForm.detach();
+      
 
     let dataTag = "";
     switch (item) {
-      
+      case 'newReview':
+        dataTag = `<h4>${data}</h4>`;
+        $newReviewForm.appendTo($main);
+        $(dataTag).appendTo("#datatag");
+        break;
+      case 'showReviews':
+        getReviewsByProperty(data)
+        .then(reviews => propertyReviews.addReviews(reviews))
+        $propertyReviews.appendTo($main);
+        break;
       case 'newReservation':
         dataTag = `<h4>${data}</h4>`;
         $newReservationForm.appendTo($main);
@@ -62,14 +72,14 @@ $(() => {
           <h4>Start date: ${moment(data.start_date).format("MMMM DD, YYYY")}</h4>
           <h4>End date: ${moment(data.end_date).format("MMMM DD, YYYY")}</h4>
         </div>
-      ` 
-      const errorMessage = data.error_message ? `<h4>${data.error_message}</h4>` : ``;
-      $(reservationDetails).appendTo($main);
-      $updateReservationForm.appendTo($main);
-      $(dataTag).appendTo("#datatag");
-      $(errorMessage).appendTo('#error-message');
-      break;
+      `
+        const errorMessage = data.error_message ? `<h4>${data.error_message}</h4>` : ``;
+        $(reservationDetails).appendTo($main);
+        $updateReservationForm.appendTo($main);
+        $(dataTag).appendTo("#datatag");
+        $(errorMessage).appendTo('#error-message');
+        break;
     }
   }
-  
+
 });

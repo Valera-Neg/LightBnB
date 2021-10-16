@@ -12,11 +12,13 @@ function logOut() {
 }
 
 function logIn(data) {
-  return $.ajax({
+  loginObject = $.ajax({
     method: "POST",
     url: "/users/login",
     data
   });
+  console.log(loginObject)
+  return loginObject
 }
 
 function signUp(data) {
@@ -77,11 +79,38 @@ function getIndividualReservation(reservationId) {
   });
 }
 
-const updateReservation = function() {
+const updateReservation = function(data) {
   return $.ajax({
     method: "POST",
     url: `/api/reservations/${data.reservation_id}`,
     data,
   });
 }
+
+const deleteReservation = function(data) {
+  console.log('data: ', data)
+  return $.ajax({
+    method: "DELETE",
+    url: `/api/reservations/${data.id}`
+  })
+}
+
+
+const getReviewsByProperty = function(propertyId) {
+  const url = `/api/reviews/${propertyId}`;
+  return $.ajax({
+    url,
+  });
+}
+
+const submitReview = function(data) {
+  const url = `/api/reviews/${data.reservationId}`
+  return $.ajax({
+    method: "POST",
+    url,
+    data,
+  });
+}
+
+
 
