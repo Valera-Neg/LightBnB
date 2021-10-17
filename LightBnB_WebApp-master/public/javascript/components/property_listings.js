@@ -39,7 +39,7 @@ $(() => {
       $('.delete-button').on('click', function() {
         const idData = $(this).attr('id').substring(16);
         getIndividualReservation(idData).then(data => {
-          deleteReservation(data) // was idData = dadt as argument before;
+          deleteReservation(data) 
           .then(() => console.log('Success!'))
           .catch(err => console.error(err));
 

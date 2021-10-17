@@ -2,6 +2,7 @@ $(() => {
   window.propertyListing = {};
 
   function createListing(property, isReservation) {
+    console.log(property.id)
     console.log('property: ', property);
     console.log('isReservation: ', isReservation);
     return `

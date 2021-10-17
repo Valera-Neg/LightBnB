@@ -23,6 +23,7 @@ $(() => {
     // clear review fields
     $('#new-review-rating').val("");
     $("#new-review-body").val("");
+    $('#datatag h4').empty();
     if (reviewRating && reservationId) {
       getIndividualReservation(reservationId)
       .then(data => {

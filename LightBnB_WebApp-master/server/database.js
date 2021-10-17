@@ -374,7 +374,7 @@ exports.getReviewsByProperty = getReviewsByProperty;
 
 const addReview =  function(review) {
  const queryString = `
- INSERT INTO property_revievs (guest_id, property_id, reservation_id, rating, message)
+ INSERT INTO property_reviews (guest_id, property_id, reservation_id, rating, message)
  VALUES ($1, $2, $3, $4, $5)
  RETURNING * `;
 const params = [review.guest_id, review.property_id, 
@@ -383,9 +383,9 @@ const params = [review.guest_id, review.property_id,
   return pool 
     .query(queryString, params)
     .then((result) => {
-      return result.rows;
+      return result.rows[0];
     })
-    .catch(() => console.error(err))
+    .catch((err) => console.error(err))
 }
 
 exports.addReview = addReview;
