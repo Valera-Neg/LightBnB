@@ -15,7 +15,7 @@ $(() => {
     $updateReservationForm.detach();
     $propertyReviews.detach();
     $newReviewForm.detach();
-      
+
 
     let dataTag = "";
     switch (item) {
@@ -26,7 +26,7 @@ $(() => {
         break;
       case 'showReviews':
         getReviewsByProperty(data)
-        .then(reviews => propertyReviews.addReviews(reviews))
+          .then(reviews => propertyReviews.addReviews(reviews))
         $propertyReviews.appendTo($main);
         break;
       case 'newReservation':

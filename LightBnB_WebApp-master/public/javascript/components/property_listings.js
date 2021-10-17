@@ -19,49 +19,49 @@ $(() => {
 
   function addProperties(properties, isReservation = false) {
 
-    if(!isReservation) {
+    if (!isReservation) {
       clearListings();
     }
     getMyDetails()
-    .then()
+      .then()
     for (const propertyId in properties) {
       const property = properties[propertyId];
       const listing = propertyListing.createListing(property, isReservation);
       addListing(listing);
     }
     if (isReservation) {
-      $('.update-button').on('click', function() {
+      $('.update-button').on('click', function () {
         const idData = $(this).attr('id').substring(16);
         getIndividualReservation(idData).then(data => {
           views_manager.show("updateReservation", data);
         });
       })
-      $('.delete-button').on('click', function() {
+      $('.delete-button').on('click', function () {
         const idData = $(this).attr('id').substring(16);
         getIndividualReservation(idData).then(data => {
-          deleteReservation(data) 
-          .then(() => console.log('Success!'))
-          .catch(err => console.error(err));
+          deleteReservation(data)
+            .then(() => console.log('Success!'))
+            .catch(err => console.error(err));
 
-         });
+        });
       })
-      $('.add-review-button').on('click', function() {
+      $('.add-review-button').on('click', function () {
         const idData = $(this).attr('id').substring(11);
         views_manager.show("newReview", idData);
       })
 
     } else {
-      $('.reserve-button').on('click', function() {
+      $('.reserve-button').on('click', function () {
         const idData = $(this).attr('id').substring(17);
         views_manager.show('newReservation', idData);
       })
 
-   
-      $('.review_details').on('click', function() {
+
+      $('.review_details').on('click', function () {
         const idData = $(this).attr('id').substring(15);
         views_manager.show('showReviews', idData);
       })
-    } 
+    }
   }
   window.propertyListings.addProperties = addProperties;
 

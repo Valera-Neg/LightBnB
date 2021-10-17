@@ -164,16 +164,16 @@ $(() => {
     const propertyId = $(this).find("#datatag h4").text();
     const dataObj = { start_date: startDate, end_date: endDate, property_id: propertyId }
     submitReservation(dataObj)
-    .then(() => {
-      views_manager.show('listings');
-    })
-    .catch((error) => {
-      console.error(error);
-      views_manager.show('listings');
-    })
+      .then(() => {
+        views_manager.show('listings');
+      })
+      .catch((error) => {
+        console.error(error);
+        views_manager.show('listings');
+      })
   });
 
-  $('body').on('click', '#reservation-form__cancel', function() {
+  $('body').on('click', '#reservation-form__cancel', function () {
     views_manager.show('listings');
     return false;
   });
